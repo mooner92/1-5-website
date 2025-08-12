@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>야자 관리 프로그램</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f7fa;
+            min-height: 100vh;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #2d3748;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-info {
+            text-align: left;
+        }
+
+        .main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #718096;
+        }
+
+        .date-info {
+            font-size: 1.1rem;
+            color: #4a5568;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .current-time {
+            font-size: 0.9rem;
+            color: #2d3748;
+            margin-top: 4px;
+        }
+
+        .main-add-btn {
+            width: 50px;
+            height: 50px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .main-add-btn:hover {
+            background: #38a169;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .main-form {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .main-form.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 2fr 2fr;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .period-select-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .period-select-group label {
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .period-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin: 0;
+            width: 16px;
+            height: 16px;
+        }
+
+        .checkbox-item label {
+            font-size: 0.85rem;
+            color: #4a5568;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .period-section {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .period-section.current {
+            border: 2px solid #00ff88;
+            box-shadow: 
+                0 0 15px rgba(0, 255, 136, 0.4),
+                0 0 25px rgba(0, 255, 136, 0.2);
+            animation: currentNeonGlow 3s infinite alternate;
+            transform: scale(1.01);
+        }
+
+        .period-section.past {
+            opacity: 0.5;
+            filter: grayscale(0.3);
+        }
+
+        @keyframes currentNeonGlow {
+            from {
+                box-shadow: 
+                    0 0 15px rgba(0, 255, 136, 0.4),
+                    0 0 25px rgba(0, 255, 136, 0.2);
+            }
+            to {
+                box-shadow: 
+                    0 0 20px rgba(0, 255, 136, 0.6),
+                    0 0 35px rgba(0, 255, 136, 0.3);
+            }
+        }
+
+        .weekend-notice {
+            grid-column: 1 / -1;
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            color: #c53030;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .period-header {
+            background: #4a5568;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .period-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .period-time {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .student-count {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .form-container {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: none;
+            background: #f7fafc;
+        }
+
+        .form-container.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .form-group input[type="text"]#customReason1,
+        .form-group input[type="text"]#customReason2,
+        .form-group input[type="text"]#customReason3 {
+            display: none;
+            margin-top: 8px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .submit-btn {
+            flex: 1;
+            padding: 10px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background: #3182ce;
+        }
+
+        .cancel-btn {
+            padding: 10px 20px;
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .cancel-btn:hover {
+            background: #cbd5e0;
+        }
+
+        .student-list {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .student-item:hover {
+            border-color: #cbd5e0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .student-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1rem;
+        }
+
+        .student-details {
+            font-size: 0.85rem;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+
+        .student-number {
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .student-reason {
+            background: #f1f5f9;
+            padding: 6px 8px;
+            border-radius: 4px;
+            border-left: 3px solid #94a3b8;
+            color: #475569;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #fed7d7;
+            color: #c53030;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background: #feb2b2;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #a0aec0;
+            font-style: italic;
+            padding: 40px 20px;
+            font-size: 0.9rem;
+        }
+
+        .home-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #48bb78;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(72, 187, 120, 0.4);
+            animation: neonGlow 2s infinite alternate;
+        }
+
+        .home-btn:hover {
+            background: #38a169;
+            box-shadow: 0 0 25px rgba(72, 187, 120, 0.8);
+            transform: translateY(-2px);
+        }
+
+        @keyframes neonGlow {
+            from {
+                box-shadow: 0 0 15px rgba(72, 187, 120, 0.4), 0 0 25px rgba(72, 187, 120, 0.2);
+            }
+            to {
+                box-shadow: 0 0 25px rgba(72, 187, 120, 0.6), 0 0 35px rgba(72, 187, 120, 0.4);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .main-title {
+                font-size: 1.6rem;
+            }
+            
+            .period-header {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .form-container, .student-list {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-info">
+                <h1 class="main-title">야자 관리 프로그램</h1>
+                <p class="subtitle">Creative & Innovative Program 불참 학생 관리</p>
+                <div class="date-info" id="dateInfo"></div>
+                <div class="current-time" id="currentTime"></div>
+            </div>
+            <button class="main-add-btn" onclick="toggleMainForm()" id="addButton">+</button>
+        </div>
+    </div>
+
+    <div class="container" id="mainContainer">
+        <div class="main-form" id="mainForm">
+            <div class="form-grid">
+                <div class="period-select-group">
+                    <label>차시 선택</label>
+                    <div class="period-checkboxes">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="period1" value="1">
+                            <label for="period1">1차시</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="period2" value="2">
+                            <label for="period2">2차시</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="period3" value="3">
+                            <label for="period3">3차시</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mainName">이름</label>
+                    <input type="text" id="mainName" placeholder="학생 이름 입력">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mainCode">학생코드</label>
+                    <input type="text" id="mainCode" placeholder="학생코드 입력">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mainReason">사유</label>
+                    <select id="mainReason" onchange="toggleMainCustomReason()">
+                        <option value="">사유 선택</option>
+                        <option value="병원">병원</option>
+                        <option value="학원">학원</option>
+                        <option value="가정사">가정사</option>
+                        <option value="기타">기타</option>
+                    </select>
+                    <input type="text" id="mainCustomReason" placeholder="기타 사유를 입력하세요" style="display: none; margin-top: 8px;">
+                </div>
+            </div>
+            
+            <div class="form-actions" style="margin-top: 20px;">
+                <button class="submit-btn" onclick="addMainStudent()">추가</button>
+                <button class="cancel-btn" onclick="toggleMainForm()">취소</button>
+            </div>
+        </div>
+        <!-- 1차시 -->
+        <div class="period-section">
+            <div class="period-header">
+                <div class="period-title">CIP 1차시</div>
+                <div class="period-time">17:00 ~ 17:40</div>
+                <div class="student-count" id="count1">0명</div>
+            </div>
+            
+            <div class="student-list" id="list1">
+                <div class="empty-state">불참 학생이 없습니다</div>
+            </div>
+        </div>
+
+        <!-- 2차시 -->
+        <div class="period-section">
+            <div class="period-header">
+                <div class="period-title">CIP 2차시</div>
+                <div class="period-time">18:40 ~ 20:00</div>
+                <div class="student-count" id="count2">0명</div>
+            </div>
+            
+            <div class="student-list" id="list2">
+                <div class="empty-state">불참 학생이 없습니다</div>
+            </div>
+        </div>
+
+        <!-- 3차시 -->
+        <div class="period-section">
+            <div class="period-header">
+                <div class="period-title">CIP 3차시</div>
+                <div class="period-time">20:10 ~ 21:00</div>
+                <div class="student-count" id="count3">0명</div>
+            </div>
+            
+            <div class="student-list" id="list3">
+                <div class="empty-state">불참 학생이 없습니다</div>
+            </div>
+        </div>
+    </div>
+
+    <a href="../index.html" class="home-neon-btn">홈으로</a>
+    <a href="https://open.kakao.com/o/s9IjzNKh" target="_blank" class="inquiry-btn">문의</a>
+
+    <script>
+        // 학생 데이터 저장용 배열 (날짜별로 관리)
+        let students = {
+            1: [],
+            2: [],
+            3: []
+        };
+
+        // 현재 날짜 키 생성
+        function getCurrentDateKey() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // 요일 체크 (월~금만 허용)
+        function isWeekday() {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0: 일, 1: 월, 2: 화, 3: 수, 4: 목, 5: 금, 6: 토
+            return dayOfWeek >= 1 && dayOfWeek <= 5;
+        }
+
+        // 현재 시간에 따른 차시 확인
+        function getCurrentPeriod() {
+            const now = new Date();
+            const currentTime = now.getHours() * 60 + now.getMinutes();
+            
+            // 17:00-17:40 (1차시)
+            if (currentTime >= 17 * 60 && currentTime <= 17 * 60 + 40) {
+                return 1;
+            }
+            // 18:40-20:00 (2차시)
+            else if (currentTime >= 18 * 60 + 40 && currentTime <= 20 * 60) {
+                return 2;
+            }
+            // 20:10-21:00 (3차시)
+            else if (currentTime >= 20 * 60 + 10 && currentTime <= 21 * 60) {
+                return 3;
+            }
+            
+            return null;
+        }
+
+        // 시간이 지난 차시인지 확인
+        function isPastPeriod(period) {
+            const now = new Date();
+            const currentTime = now.getHours() * 60 + now.getMinutes();
+            
+            if (period === 1) {
+                return currentTime > 17 * 60 + 40;
+            } else if (period === 2) {
+                return currentTime > 20 * 60;
+            } else if (period === 3) {
+                return currentTime > 21 * 60;
+            }
+            
+            return false;
+        }
+
+        // 로컬 스토리지에서 데이터 로드 → 서버에서 데이터 로드
+        async function loadStudentData() {
+            try {
+                const dateKey = getCurrentDateKey();
+                const response = await fetch(`/api/yaja/list/${dateKey}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    students = result.data;
+                } else {
+                    students = { 1: [], 2: [], 3: [] };
+                    console.error('데이터 로드 실패:', result.msg);
+                }
+            } catch (error) {
+                console.error('서버 연결 오류:', error);
+                students = { 1: [], 2: [], 3: [] };
+            }
+        }
+
+        // 로컬 스토리지에 데이터 저장 → 서버에 데이터 저장 (개별 학생 추가시)
+        async function saveStudentToServer(studentData, periods) {
+            try {
+                const dateKey = getCurrentDateKey();
+                const response = await fetch('/api/yaja/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        date: dateKey,
+                        periods: periods,
+                        student_name: studentData.name,
+                        student_code: studentData.code,
+                        student_number: studentData.studentNumber,
+                        reason: studentData.reason
+                    })
+                });
+                
+                const result = await response.json();
+                if (!result.success) {
+                    alert('서버 저장 실패: ' + result.msg);
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('서버 저장 오류:', error);
+                alert('서버 연결에 실패했습니다.');
+                return false;
+            }
+        }
+
+        // 서버에서 학생 삭제
+        async function deleteStudentFromServer(studentId) {
+            try {
+                const response = await fetch(`/api/yaja/delete/${studentId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                if (!result.success) {
+                    alert('서버 삭제 실패: ' + result.msg);
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('서버 삭제 오류:', error);
+                alert('서버 연결에 실패했습니다.');
+                return false;
+            }
+        }
+
+        // 날짜 및 시간 정보 업데이트
+        function updateDateTime() {
+            const now = new Date();
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            const dayOfWeek = days[now.getDay()];
+            
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            document.getElementById('dateInfo').textContent = `${year}년 ${month}월 ${day}일 (${dayOfWeek})`;
+            document.getElementById('currentTime').textContent = `현재 시간: ${hours}:${minutes}`;
+        }
+
+        // 차시별 상태 업데이트
+        function updatePeriodStatus() {
+            const currentPeriod = getCurrentPeriod();
+            
+            for (let i = 1; i <= 3; i++) {
+                const periodElement = document.getElementById(`periodSection${i}`);
+                if (periodElement) {
+                    periodElement.classList.remove('current', 'past');
+                    
+                    if (currentPeriod === i) {
+                        periodElement.classList.add('current');
+                    } else if (isPastPeriod(i)) {
+                        periodElement.classList.add('past');
+                    }
+                }
+            }
+        }
+
+        // UI 렌더링
+        function renderUI() {
+            const container = document.getElementById('mainContainer');
+            
+            if (!isWeekday()) {
+                container.innerHTML = `
+                    <div class="weekend-notice">
+                        주말에는 야자가 없습니다.<br>
+                        월요일부터 금요일까지만 이용 가능합니다.
+                    </div>
+                `;
+                document.getElementById('addButton').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('addButton').style.display = 'block';
+            
+            container.innerHTML = `
+                <div class="main-form" id="mainForm">
+                    <div class="form-grid">
+                        <div class="period-select-group">
+                            <label>차시 선택</label>
+                            <div class="period-checkboxes">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="period1" value="1">
+                                    <label for="period1">1차시</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="period2" value="2">
+                                    <label for="period2">2차시</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="period3" value="3">
+                                    <label for="period3">3차시</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mainName">이름</label>
+                            <input type="text" id="mainName" placeholder="학생 이름 입력">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mainCode">학생코드</label>
+                            <input type="text" id="mainCode" placeholder="학생코드 입력">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mainReason">사유</label>
+                            <select id="mainReason" onchange="toggleMainCustomReason()">
+                                <option value="">사유 선택</option>
+                                <option value="병원">병원</option>
+                                <option value="학원">학원</option>
+                                <option value="가정사">가정사</option>
+                                <option value="기타">기타</option>
+                            </select>
+                            <input type="text" id="mainCustomReason" placeholder="기타 사유를 입력하세요" style="display: none; margin-top: 8px;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions" style="margin-top: 20px;">
+                        <button class="submit-btn" onclick="addMainStudent()">추가</button>
+                        <button class="cancel-btn" onclick="toggleMainForm()">취소</button>
+                    </div>
+                </div>
+
+                <!-- 1차시 -->
+                <div class="period-section" id="periodSection1">
+                    <div class="period-header">
+                        <div class="period-title">CIP 1차시</div>
+                        <div class="period-time">17:00 ~ 17:40</div>
+                        <div class="student-count" id="count1">0명</div>
+                    </div>
+                    
+                    <div class="student-list" id="list1">
+                        <div class="empty-state">불참 학생이 없습니다</div>
+                    </div>
+                </div>
+
+                <!-- 2차시 -->
+                <div class="period-section" id="periodSection2">
+                    <div class="period-header">
+                        <div class="period-title">CIP 2차시</div>
+                        <div class="period-time">18:40 ~ 20:00</div>
+                        <div class="student-count" id="count2">0명</div>
+                    </div>
+                    
+                    <div class="student-list" id="list2">
+                        <div class="empty-state">불참 학생이 없습니다</div>
+                    </div>
+                </div>
+
+                <!-- 3차시 -->
+                <div class="period-section" id="periodSection3">
+                    <div class="period-header">
+                        <div class="period-title">CIP 3차시</div>
+                        <div class="period-time">20:10 ~ 21:00</div>
+                        <div class="student-count" id="count3">0명</div>
+                    </div>
+                    
+                    <div class="student-list" id="list3">
+                        <div class="empty-state">불참 학생이 없습니다</div>
+                    </div>
+                </div>
+            `;
+            
+            // 데이터 렌더링
+            for (let i = 1; i <= 3; i++) {
+                renderStudentList(i);
+                updateCount(i);
+            }
+            
+            updatePeriodStatus();
+        }
+
+        // 학생 정보 데이터 (CSV에서 가져온 정보)
+        const studentData = {
+            '7545': { name: '강건', number: '10501' },
+            '8415': { name: '권율', number: '10502' },
+            '5083': { name: '김도엽', number: '10503' },
+            '8721': { name: '김도현', number: '10504' },
+            '4939': { name: '김민성', number: '10505' },
+            '8306': { name: '김아인', number: '10506' },
+            '1501': { name: '김우빈', number: '10507' },
+            '4419': { name: '김현', number: '10508' },
+            '9731': { name: '노승민', number: '10509' },
+            '8911': { name: '박민준', number: '10510' },
+            '2856': { name: '박상효', number: '10511' },
+            '5181': { name: '박승현', number: '10512' },
+            '5711': { name: '박주은', number: '10513' },
+            '8978': { name: '박준이', number: '10514' },
+            '9429': { name: '박준호', number: '10515' },
+            '8603': { name: '서지후', number: '10516' },
+            '2721': { name: '석진오', number: '10517' },
+            '3506': { name: '오병현', number: '10518' },
+            '9621': { name: '유재민', number: '10519' },
+            '5352': { name: '윤정연', number: '10520' },
+            '6321': { name: '이민주', number: '10521' },
+            '6241': { name: '이지성', number: '10522' },
+            '5011': { name: '이지혁', number: '10523' },
+            '2611': { name: '임문선', number: '10524' },
+            '5882': { name: '임지원', number: '10525' },
+            '2510': { name: '정찬영', number: '10526' },
+            '1983': { name: '조성윤', number: '10527' },
+            '3953': { name: '조윤찬', number: '10528' },
+            '3650': { name: '진찬종', number: '10529' },
+            '5514': { name: '차이한', number: '10530' },
+            '5215': { name: '최진명', number: '10531' },
+            '6662': { name: '최홍준', number: '10532' },
+            '9630': { name: '김선율', number: '10533' },
+            '2911': { name: '김정운', number: '10534' },
+            '2486': { name: '이준상', number: '10535' },
+            '6294': { name: '임주훈', number: '10536' }
+        };
+
+        // 메인 폼 표시/숨김 토글
+        function toggleMainForm() {
+            const form = document.getElementById('mainForm');
+            const isActive = form.classList.contains('active');
+            
+            if (isActive) {
+                form.classList.remove('active');
+            } else {
+                form.classList.add('active');
+                document.getElementById('mainName').focus();
+            }
+        }
+
+        // 메인 폼 기타 사유 입력 필드 토글
+        function toggleMainCustomReason() {
+            const select = document.getElementById('mainReason');
+            const customInput = document.getElementById('mainCustomReason');
+            
+            if (select.value === '기타') {
+                customInput.style.display = 'block';
+                customInput.focus();
+            } else {
+                customInput.style.display = 'none';
+                customInput.value = '';
+            }
+        }
+
+        // 메인 폼에서 학생 추가
+        async function addMainStudent() {
+            const name = document.getElementById('mainName').value.trim();
+            const code = document.getElementById('mainCode').value.trim();
+            const reasonSelect = document.getElementById('mainReason').value;
+            const customReason = document.getElementById('mainCustomReason').value.trim();
+            
+            // 선택된 차시들 가져오기
+            const selectedPeriods = [];
+            for (let i = 1; i <= 3; i++) {
+                if (document.getElementById(`period${i}`).checked) {
+                    selectedPeriods.push(i);
+                }
+            }
+            
+            if (selectedPeriods.length === 0) {
+                alert('최소 하나의 차시를 선택해주세요.');
+                return;
+            }
+            
+            let reason = reasonSelect;
+            if (reasonSelect === '기타') {
+                if (!customReason) {
+                    alert('기타 사유를 입력해주세요.');
+                    return;
+                }
+                reason = customReason;
+            }
+
+            if (!name || !code || !reasonSelect) {
+                alert('모든 필드를 입력해주세요.');
+                return;
+            }
+
+            // 학생코드로 학번과 이름 확인
+            const studentInfo = studentData[code];
+            if (!studentInfo) {
+                alert('존재하지 않는 학생코드입니다.');
+                return;
+            }
+
+            if (studentInfo.name !== name) {
+                alert(`입력한 이름과 학생코드가 일치하지 않습니다.\n학생코드 ${code}의 이름: ${studentInfo.name}`);
+                return;
+            }
+
+            // 서버에 학생 데이터 저장
+            const studentDataToSave = {
+                name: name,
+                code: code,
+                studentNumber: studentInfo.number,
+                reason: reason
+            };
+
+            const success = await saveStudentToServer(studentDataToSave, selectedPeriods);
+            if (success) {
+                // 서버 저장 성공 시 로컬 데이터 업데이트
+                await loadStudentData();
+                
+                // UI 업데이트
+                for (let i = 1; i <= 3; i++) {
+                    renderStudentList(i);
+                    updateCount(i);
+                }
+
+                clearMainForm();
+                toggleMainForm(); // 폼 닫기
+            }
+        }
+
+        // 메인 폼 초기화
+        function clearMainForm() {
+            document.getElementById('mainName').value = '';
+            document.getElementById('mainCode').value = '';
+            document.getElementById('mainReason').value = '';
+            document.getElementById('mainCustomReason').value = '';
+            document.getElementById('mainCustomReason').style.display = 'none';
+            
+            // 체크박스 모두 해제
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`period${i}`).checked = false;
+            }
+        }
+
+        // 학생 제거 함수
+        async function removeStudent(period, studentId) {
+            const student = students[period].find(s => s.id === studentId);
+            if (!student) return;
+            
+            const inputCode = prompt(`'${student.name}' 학생을 삭제하려면 학생코드를 입력하세요:`);
+            if (!inputCode) return;
+            
+            if (inputCode.trim() !== student.code) {
+                alert('학생코드가 일치하지 않습니다.');
+                return;
+            }
+            
+            // 서버에서 삭제
+            const success = await deleteStudentFromServer(studentId);
+            if (success) {
+                // 서버 삭제 성공 시 데이터 다시 로드
+                await loadStudentData();
+                
+                // UI 업데이트
+                for (let i = 1; i <= 3; i++) {
+                    renderStudentList(i);
+                    updateCount(i);
+                }
+            }
+        }
+
+        // 학생 목록 렌더링
+        function renderStudentList(period) {
+            const listElement = document.getElementById(`list${period}`);
+            if (!listElement) return;
+            
+            if (students[period].length === 0) {
+                listElement.innerHTML = '<div class="empty-state">불참 학생이 없습니다</div>';
+                return;
+            }
+
+            listElement.innerHTML = students[period].map(student => `
+                <div class="student-item">
+                    <button class="remove-btn" onclick="removeStudent(${period}, ${student.id})">삭제</button>
+                    <div class="student-header">
+                        <div class="student-name">${student.name}</div>
+                    </div>
+                    <div class="student-details">
+                        <div class="student-number">학번: ${student.studentNumber}</div>
+                        <div class="student-reason">사유: ${student.reason}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 폼 초기화
+        function clearForm(period) {
+            // 더 이상 사용하지 않는 함수 (메인 폼으로 통합)
+        }
+
+        // 인원수 업데이트
+        function updateCount(period) {
+            const countElement = document.getElementById(`count${period}`);
+            if (countElement) {
+                const count = students[period].length;
+                countElement.textContent = `${count}명`;
+            }
+        }
+
+        // Enter 키 이벤트 처리
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const target = e.target;
+                if (target.id === 'mainName') {
+                    document.getElementById('mainCode').focus();
+                } else if (target.id === 'mainCode') {
+                    document.getElementById('mainReason').focus();
+                } else if (target.id === 'mainCustomReason') {
+                    addMainStudent();
+                }
+            }
+        });
+
+        // ESC 키로 폼 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const mainForm = document.getElementById('mainForm');
+                if (mainForm) mainForm.classList.remove('active');
+            }
+        });
+
+        // 초기화 및 주기적 업데이트
+        async function initialize() {
+            await loadStudentData();
+            updateDateTime();
+            renderUI();
+            
+            // 매분마다 시간 업데이트
+            setInterval(() => {
+                updateDateTime();
+                updatePeriodStatus();
+            }, 60000);
+            
+            // 페이지 숨김/표시 이벤트 처리 (데이터 유지)
+            document.addEventListener('visibilitychange', async function() {
+                if (!document.hidden) {
+                    // 페이지가 다시 보일 때 데이터 다시 로드
+                    await loadStudentData();
+                    for (let i = 1; i <= 3; i++) {
+                        renderStudentList(i);
+                        updateCount(i);
+                    }
+                    updatePeriodStatus();
+                }
+            });
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html>

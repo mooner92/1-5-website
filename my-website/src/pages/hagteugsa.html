@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학급특별사업 신청</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f7fa;
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .home-neon-btn {
+            position: fixed;
+            left: 32px;
+            bottom: 32px;
+            z-index: 1000;
+            display: inline-block;
+            padding: 0.6rem 1.6rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            background: #22c55e;
+            border: none;
+            border-radius: 1.2rem;
+            text-decoration: none;
+            box-shadow:
+                0 0 8px #22c55e,
+                0 0 16px #4ade80,
+                0 0 24px #bbf7d0;
+            transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+        }
+        .home-neon-btn:hover {
+            background: #16a34a;
+            box-shadow:
+                0 0 16px #4ade80,
+                0 0 32px #22c55e,
+                0 0 48px #bbf7d0;
+            transform: scale(1.07);
+        }
+        .inquiry-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 1001;
+            background: #fee500;
+            color: #181600;
+            font-weight: bold;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.9rem 2.2rem;
+            font-size: 1.15rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+            text-decoration: none;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+        }
+        .inquiry-btn:hover {
+            background: #ffe066;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+            transform: translateY(-2px) scale(1.04);
+        }
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .add-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        .hagteugsa-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .hagteugsa-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+        .hagteugsa-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .item-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        .item-desc {
+            color: #718096;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .item-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+        .members-list {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+        .member-item {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #2d3748;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin: 2px;
+            font-size: 0.8em;
+        }
+        .item-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .join-btn, .delete-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        .join-btn {
+            background: linear-gradient(45deg, #3182ce, #2c5aa0);
+            color: white;
+        }
+        .join-btn:hover {
+            background: linear-gradient(45deg, #2c5aa0, #2a4c82);
+        }
+        .join-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        .delete-btn {
+            background: linear-gradient(45deg, #e53e3e, #c53030);
+            color: white;
+        }
+        .delete-btn:hover {
+            background: linear-gradient(45deg, #c53030, #9c2b2b);
+        }
+        .modal-bg {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .modal h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .submit-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(45deg, #45a049, #3d8b40);
+        }
+        .cancel-btn {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        .cancel-btn:hover {
+            background: #cbd5e0;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #718096;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 학급특별사업 신청</h1>
+        
+        <div class="header">
+            <h2>현재 모집중인 학특사</h2>
+            <button class="add-btn" id="addBtn">
+                ➕ 새 학특사 등록
+            </button>
+        </div>
+        
+        <div id="loadingDiv" class="loading">
+            데이터를 불러오는 중...
+        </div>
+        
+        <div id="hagteugsaList" class="hagteugsa-list">
+            <!-- 학특사 목록이 여기에 렌더링됩니다 -->
+        </div>
+    </div>
+
+    <!-- 학특사 생성 모달 -->
+    <div id="modalBg" class="modal-bg">
+        <div class="modal">
+            <h2>새 학특사 등록</h2>
+            <div class="form-group">
+                <label for="creatorInput">생성자 이름</label>
+                <input type="text" id="creatorInput">
+            </div>
+            <div class="form-group">
+                <label for="creatorCodeInput">생성자 학생코드</label>
+                <input type="text" id="creatorCodeInput">
+            </div>
+            <div class="form-group">
+                <label for="titleInput">학특사 제목</label>
+                <input type="text" id="titleInput">
+            </div>
+            <div class="form-group">
+                <label for="descInput">학특사 설명</label>
+                <textarea id="descInput"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="maxInput">최대 인원</label>
+                <input type="number" id="maxInput" min="2" max="30" value="5">
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel-btn" id="addCancelBtn">취소</button>
+                <button class="modal-btn submit-btn" id="addSubmitBtn">등록</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 학생 정보 데이터 (CSV에서 가져온 정보)
+        const studentData = {
+            '7545': { name: '강건', number: '10501' },
+            '8415': { name: '권율', number: '10502' },
+            '5083': { name: '김도엽', number: '10503' },
+            '8721': { name: '김도현', number: '10504' },
+            '4939': { name: '김민성', number: '10505' },
+            '8306': { name: '김아인', number: '10506' },
+            '1501': { name: '김우빈', number: '10507' },
+            '4419': { name: '김현', number: '10508' },
+            '9731': { name: '노승민', number: '10509' },
+            '8911': { name: '박민준', number: '10510' },
+            '2856': { name: '박상효', number: '10511' },
+            '5181': { name: '박승현', number: '10512' },
+            '5711': { name: '박주은', number: '10513' },
+            '8978': { name: '박준이', number: '10514' },
+            '9429': { name: '박준호', number: '10515' },
+            '8603': { name: '서지후', number: '10516' },
+            '2721': { name: '석진오', number: '10517' },
+            '3506': { name: '오병현', number: '10518' },
+            '9621': { name: '유재민', number: '10519' },
+            '5352': { name: '윤정연', number: '10520' },
+            '6321': { name: '이민주', number: '10521' },
+            '6241': { name: '이지성', number: '10522' },
+            '5011': { name: '이지혁', number: '10523' },
+            '2611': { name: '임문선', number: '10524' },
+            '5882': { name: '임지원', number: '10525' },
+            '2510': { name: '정찬영', number: '10526' },
+            '1983': { name: '조성윤', number: '10527' },
+            '3953': { name: '조윤찬', number: '10528' },
+            '3650': { name: '진찬종', number: '10529' },
+            '5514': { name: '차이한', number: '10530' },
+            '5215': { name: '최진명', number: '10531' },
+            '6662': { name: '최홍준', number: '10532' },
+            '9630': { name: '김선율', number: '10533' },
+            '2911': { name: '김정운', number: '10534' },
+            '2486': { name: '이준상', number: '10535' },
+            '6294': { name: '임주훈', number: '10536' }
+        };
+
+        // 학생 데이터 로드 (더 이상 CSV 파일 불러오지 않음)
+        async function loadStudentData() {
+            console.log('학생 데이터 로드 완료:', Object.keys(studentData).length + '명');
+            console.log('학생 데이터 예시:', Object.entries(studentData).slice(0, 3));
+        }
+
+        // 학특사 목록 조회
+        async function loadHagteugsaList() {
+            try {
+                document.getElementById('loadingDiv').style.display = 'block';
+                const response = await fetch('/api/hagteugsa/list');
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderHagteugsaList(result.data);
+                } else {
+                    alert('학특사 목록을 불러오는데 실패했습니다: ' + result.msg);
+                }
+            } catch (error) {
+                console.error('학특사 목록 로드 실패:', error);
+                alert('학특사 목록을 불러오는데 실패했습니다.');
+            } finally {
+                document.getElementById('loadingDiv').style.display = 'none';
+            }
+        }
+
+        // 학특사 목록 렌더링
+        function renderHagteugsaList(hagteugsaList) {
+            const container = document.getElementById('hagteugsaList');
+            
+            if (hagteugsaList.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>등록된 학특사가 없습니다</h3>
+                        <p>새로운 학특사를 등록해보세요!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = hagteugsaList.map(hagteugsa => `
+                <div class="hagteugsa-item">
+                    <div class="item-title">${hagteugsa.title}</div>
+                    <div class="item-desc">${hagteugsa.description}</div>
+                    <div class="item-info">
+                        <span>생성자: ${hagteugsa.creator_name}</span>
+                        <span>${hagteugsa.current_members}/${hagteugsa.max_members}명</span>
+                    </div>
+                    <div class="members-list">
+                        ${hagteugsa.members.map(member => `
+                            <span class="member-item">${member}</span>
+                        `).join('')}
+                    </div>
+                    <div class="item-actions">
+                        <button class="join-btn" onclick="joinHagteugsa(${hagteugsa.id})"
+                                ${hagteugsa.current_members >= hagteugsa.max_members ? 'disabled' : ''}>
+                            ${hagteugsa.current_members >= hagteugsa.max_members ? '모집완료' : '참여하기'}
+                        </button>
+                        <button class="delete-btn" onclick="deleteHagteugsa(${hagteugsa.id}, '${hagteugsa.creator_name}')">
+                            삭제
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 학특사 생성
+        async function createHagteugsa(data) {
+            try {
+                const response = await fetch('/api/hagteugsa/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('학특사가 성공적으로 등록되었습니다!');
+                    document.getElementById('modalBg').style.display = 'none';
+                    clearInputs();
+                    loadHagteugsaList();
+                } else {
+                    alert('학특사 등록 실패: ' + result.msg);
+                }
+            } catch (error) {
+                console.error('학특사 생성 실패:', error);
+                alert('학특사 등록 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 학특사 참여
+        async function joinHagteugsa(hagteugsaId) {
+            const memberName = prompt('참여자 이름을 입력하세요');
+            if (!memberName) return;
+            
+            const memberCode = prompt('참여자 학생코드를 입력하세요');
+            if (!memberCode) return;
+
+            console.log('참여 시도 - 이름:', memberName, '코드:', memberCode);
+            console.log('전체 학생 데이터:', studentData);
+
+            // 학생 데이터 검증
+            const studentInfo = studentData[memberCode];
+            if (!studentInfo || studentInfo.name !== memberName) {
+                console.log('검증 실패 - 입력값:', { name: memberName, code: memberCode });
+                if (!studentInfo) {
+                    alert('존재하지 않는 학생코드입니다.');
+                } else {
+                    alert(`입력한 이름과 학생코드가 일치하지 않습니다.\n학생코드 ${memberCode}의 이름: ${studentInfo.name}`);
+                }
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/hagteugsa/join', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        hagteugsa_id: hagteugsaId,
+                        member_name: memberName,
+                        member_code: memberCode
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('학특사에 성공적으로 참여했습니다!');
+                    loadHagteugsaList();
+                } else {
+                    alert('참여 실패: ' + result.msg);
+                }
+            } catch (error) {
+                console.error('학특사 참여 실패:', error);
+                alert('참여 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 학특사 삭제
+        async function deleteHagteugsa(hagteugsaId, creatorName) {
+            const name = prompt('삭제하려면 이름을 입력하세요');
+            if (!name) return;
+            
+            const code = prompt('삭제하려면 학생코드를 입력하세요');
+            if (!code) return;
+
+            // 학생 데이터 검증
+            const studentInfo = studentData[code];
+            if (!studentInfo || studentInfo.name !== name) {
+                if (!studentInfo) {
+                    alert('존재하지 않는 학생코드입니다.');
+                } else {
+                    alert(`입력한 이름과 학생코드가 일치하지 않습니다.\n학생코드 ${code}의 이름: ${studentInfo.name}`);
+                }
+                return;
+            }
+
+            // 생성자 확인
+            if (name !== creatorName) {
+                alert('학특사 생성자만 삭제할 수 있습니다.');
+                return;
+            }
+
+            if (!confirm('정말로 이 학특사를 삭제하시겠습니까?')) return;
+
+            try {
+                const response = await fetch(`/api/hagteugsa/delete/${hagteugsaId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('학특사가 성공적으로 삭제되었습니다.');
+                    loadHagteugsaList();
+                } else {
+                    alert('삭제 실패: ' + result.msg);
+                }
+            } catch (error) {
+                console.error('학특사 삭제 실패:', error);
+                alert('삭제 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 입력 필드 초기화
+        function clearInputs() {
+            document.getElementById('creatorInput').value = '';
+            document.getElementById('creatorCodeInput').value = '';
+            document.getElementById('titleInput').value = '';
+            document.getElementById('descInput').value = '';
+            document.getElementById('maxInput').value = 5;
+        }
+
+        // 이벤트 리스너 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            // 학생 데이터와 학특사 목록 로드
+            loadStudentData();
+            loadHagteugsaList();
+
+            // 모달 열기/닫기
+            document.getElementById('addBtn').onclick = () => {
+                document.getElementById('modalBg').style.display = 'flex';
+            };
+            
+            document.getElementById('addCancelBtn').onclick = () => {
+                document.getElementById('modalBg').style.display = 'none';
+            };
+
+            // 등록 버튼
+            document.getElementById('addSubmitBtn').onclick = () => {
+                const creator = document.getElementById('creatorInput').value.trim();
+                const creatorCode = document.getElementById('creatorCodeInput').value.trim();
+                const title = document.getElementById('titleInput').value.trim();
+                const desc = document.getElementById('descInput').value.trim();
+                const max = parseInt(document.getElementById('maxInput').value);
+                
+                if (!creator || !creatorCode || !title || !desc || !max) {
+                    alert('모든 항목을 입력하세요!');
+                    return;
+                }
+
+                console.log('생성 시도 - 이름:', creator, '코드:', creatorCode);
+                console.log('전체 학생 데이터:', studentData);
+
+                const studentInfo = studentData[creatorCode];
+                if (!studentInfo || studentInfo.name !== creator) {
+                    console.log('검증 실패 - 입력값:', { name: creator, code: creatorCode });
+                    if (!studentInfo) {
+                        alert('존재하지 않는 학생코드입니다.');
+                    } else {
+                        alert(`입력한 이름과 학생코드가 일치하지 않습니다.\n학생코드 ${creatorCode}의 이름: ${studentInfo.name}`);
+                    }
+                    return;
+                }
+
+                createHagteugsa({
+                    title,
+                    description: desc,
+                    max_members: max,
+                    creator_name: creator,
+                    creator_code: creatorCode
+                });
+            };
+        });
+    </script>
+
+    <!-- 홈 버튼과 문의 버튼 -->
+    <a href="../index.html" class="home-neon-btn">홈으로</a>
+    <a href="https://open.kakao.com/o/s9IjzNKh" target="_blank" class="inquiry-btn">문의</a>
+</body>
+</html>

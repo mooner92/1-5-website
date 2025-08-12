@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수행평가 일정</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .add-btn {
+            position: absolute;
+            top: 120px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+            transition: all 0.3s ease;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .add-btn:hover {
+            background: #45a049;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .modal-bg {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background: #45a049;
+        }
+        
+        .cancel-btn {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .cancel-btn:hover {
+            background: #cbd5e0;
+        }
+        
+        .delete-btn {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        
+        .delete-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .card-header h3 {
+            margin: 0;
+            flex: 1;
+        }
+        
+        .subject-tag {
+            background: #e2e8f0;
+            color: #475569;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+        
+        .card.urgent .subject-tag {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .card.scheduled .subject-tag {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+        
+        .card.done .subject-tag {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+    </style>
+</head>
+<body>
+    <!-- ...existing code... -->
+<header style="position: relative;">
+    <h1>수행평가 일정</h1>
+    <div class="status-guide">
+        <div>* <span class="urgent-guide">빨간색</span>은 제출기한 2일 미만 남음<br>
+        * <span class="scheduled-guide">파란색</span>은 제출기한 2일 이상 남음<br>
+        * <span class="done-guide">초록색</span>은 수행평가 종료</div>
+    </div>
+    <!-- 수행평가 추가 버튼 -->
+    <button class="add-btn" id="addBtn" onclick="openModal()">+</button>
+</header>
+<!-- ...existing code... -->
+    <main class="full-width-main">
+        <h2>수행평가 목록</h2>
+        <div class="card-list grid" id="cardList">
+        <div class="card-list grid" id="cardList">
+            <!-- 수행평가 목록이 JavaScript로 동적 생성됩니다 -->
+        </div>
+        
+    </main>
+
+    <!-- 수행평가 추가 모달 -->
+    <div id="modalBg" class="modal-bg">
+        <div class="modal">
+            <h2>새 수행평가 추가</h2>
+            <div class="form-group">
+                <label for="nameInput">이름</label>
+                <input type="text" id="nameInput" placeholder="이름을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="codeInput">학생코드</label>
+                <input type="text" id="codeInput" placeholder="학생코드를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="subjectInput">과목</label>
+                <select id="subjectInput">
+                    <option value="">과목을 선택하세요</option>
+                    <option value="국어">국어</option>
+                    <option value="수학">수학</option>
+                    <option value="영어">영어</option>
+                    <option value="사회">사회</option>
+                    <option value="과학">과학</option>
+                    <option value="역사">역사</option>
+                    <option value="기타">기타</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="titleInput">수행평가 제목</label>
+                <input type="text" id="titleInput" placeholder="수행평가 제목을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="dateInput">제출기한</label>
+                <input type="date" id="dateInput">
+            </div>
+            <div class="form-group">
+                <label for="descInput">내용</label>
+                <textarea id="descInput" placeholder="수행평가 내용과 준비물을 입력하세요"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel-btn" onclick="closeModal()">취소</button>
+                <button class="modal-btn submit-btn" onclick="addSuhang()">추가</button>
+            </div>
+        </div>
+    </div>
+    
+        <a href="../index.html" class="home-neon-btn">홈으로</a>
+    <footer></footer>
+    <a href="https://open.kakao.com/o/s9IjzNKh" target="_blank" class="inquiry-btn">문의</a>
+    
+    <script>
+        // 권한이 있는 학생들 (김도엽, 이민주, 권율, 차이한)
+        const authorizedStudents = {
+            '5083': { name: '김도엽' },
+            '6321': { name: '이민주' },
+            '8415': { name: '권율' },
+            '5514': { name: '차이한' }
+        };
+
+        let suhangList = [];
+
+        // 서버에서 수행평가 목록 로드
+        async function loadSuhangList() {
+            try {
+                const response = await fetch('/api/suhang/list');
+                const result = await response.json();
+                
+                if (result.success) {
+                    suhangList = result.data;
+                    renderSuhangList();
+                } else {
+                    console.error('수행평가 목록 로드 실패:', result.msg);
+                    suhangList = [];
+                    renderSuhangList();
+                }
+            } catch (error) {
+                console.error('서버 연결 오류:', error);
+                suhangList = [];
+                renderSuhangList();
+            }
+        }
+
+        // 수행평가 목록 렌더링 (빨간색 -> 파란색 -> 초록색 순서)
+        function renderSuhangList() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            console.log('오늘 날짜:', today);
+            
+            // 상태별로 분류하고 정렬
+            const urgentList = []; // 빨간색 (2일 미만)
+            const scheduledList = []; // 파란색 (2일 이상)
+            const doneList = []; // 초록색 (끝남)
+            
+            suhangList.forEach(suhang => {
+                const deadlineDate = new Date(suhang.deadline);
+                deadlineDate.setHours(23, 59, 59, 999); // 마감일 끝까지
+                
+                const timeDiff = deadlineDate.getTime() - today.getTime();
+                const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                
+                // 디버깅용 로그
+                console.log(`수행평가: ${suhang.title}, 마감: ${suhang.deadline}, 오늘: ${today.toISOString().split('T')[0]}, 남은 일수: ${daysDiff}`);
+                
+                if (daysDiff < 0) {
+                    doneList.push(suhang);
+                    console.log(`-> 완료됨 (초록색)`);
+                } else if (daysDiff <= 2) {  // 2일 미만 (오늘, 내일)을 긴급으로 처리
+                    urgentList.push(suhang);
+                    console.log(`-> 긴급 (빨간색)`);
+                } else {
+                    scheduledList.push(suhang);
+                    console.log(`-> 예정 (파란색)`);
+                }
+            });
+            
+            // 각 카테고리 내에서 날짜순 정렬
+            urgentList.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+            scheduledList.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+            doneList.sort((a, b) => new Date(b.deadline) - new Date(a.deadline)); // 끝난 것은 최신순
+            
+            // 빨간색 -> 파란색 -> 초록색 순서로 합치기
+            const sortedList = [...urgentList, ...scheduledList, ...doneList];
+            
+            const cardList = document.getElementById('cardList');
+            cardList.innerHTML = sortedList.map(suhang => {
+                const deadlineDate = new Date(suhang.deadline);
+                const month = deadlineDate.getMonth() + 1;
+                const day = deadlineDate.getDate();
+                
+                // 날짜 계산을 동일하게 맞춤
+                const calcDeadlineDate = new Date(suhang.deadline);
+                calcDeadlineDate.setHours(23, 59, 59, 999);
+                const timeDiff = calcDeadlineDate.getTime() - today.getTime();
+                const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                
+                let cardClass = '';
+                if (daysDiff < 0) {
+                    cardClass = 'done';
+                } else if (daysDiff <= 2) {  // 2일 미만 (오늘, 내일)을 긴급으로 처리
+                    cardClass = 'urgent';
+                } else {
+                    cardClass = 'scheduled';
+                }
+                
+                return `
+                    <div class="card ${cardClass}">
+                        <div class="card-header">
+                            <h3>${suhang.title}</h3>
+                            <span class="subject-tag">${suhang.subject}</span>
+                        </div>
+                        <p class="date" data-deadline="${suhang.deadline}">제출기한(실시일): ${month}월 ${day}일</p>
+                        <p class="desc">${suhang.description}</p>
+                        <button class="delete-btn" onclick="deleteSuhang(${suhang.id}, '${suhang.creator_name}', '${suhang.creator_code}')">×</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 수행평가 추가
+        async function addSuhang() {
+            const name = document.getElementById('nameInput').value.trim();
+            const code = document.getElementById('codeInput').value.trim();
+            const subject = document.getElementById('subjectInput').value;
+            const title = document.getElementById('titleInput').value.trim();
+            const deadline = document.getElementById('dateInput').value;
+            const description = document.getElementById('descInput').value.trim();
+
+            // 입력 검증
+            if (!name || !code || !subject || !title || !deadline || !description) {
+                alert('모든 항목을 입력해주세요.');
+                return;
+            }
+
+            // 권한 검증
+            const student = authorizedStudents[code];
+            if (!student || student.name !== name) {
+                alert('수행평가 추가 권한이 없습니다.\n권한이 있는 학생만 고칠 수 있습니다.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/suhang/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        subject: subject,
+                        title: title,
+                        deadline: deadline,
+                        description: description,
+                        creator_name: name,
+                        creator_code: code
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('수행평가가 성공적으로 추가되었습니다!');
+                    closeModal();
+                    await loadSuhangList(); // 목록 새로고침
+                } else {
+                    alert('수행평가 추가 실패: ' + result.msg);
+                }
+            } catch (error) {
+                console.error('서버 연결 오류:', error);
+                alert('서버 연결에 실패했습니다.');
+            }
+        }
+
+        // 수행평가 삭제
+        async function deleteSuhang(suhangId, creatorName, creatorCode) {
+            const name = prompt('삭제하려면 이름을 입력하세요');
+            if (!name) return;
+            
+            const code = prompt('삭제하려면 학생코드를 입력하세요');
+            if (!code) return;
+
+            // 권한 검증
+            const student = authorizedStudents[code];
+            if (!student || student.name !== name) {
+                alert('수행평가 삭제 권한이 없습니다.\n권한이 있는 학생: 김도엽, 이민주, 권율, 차이한');
+                return;
+            }
+
+            if (!confirm('정말로 이 수행평가를 삭제하시겠습니까?')) return;
+
+            try {
+                const response = await fetch(`/api/suhang/delete/${suhangId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('수행평가가 성공적으로 삭제되었습니다.');
+                    await loadSuhangList(); // 목록 새로고침
+                } else {
+                    alert('삭제 실패: ' + result.msg);
+                }
+            } catch (error) {
+                console.error('서버 연결 오류:', error);
+                alert('서버 연결에 실패했습니다.');
+            }
+        }
+
+        // 모달 열기
+        function openModal() {
+            document.getElementById('modalBg').style.display = 'flex';
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            document.getElementById('modalBg').style.display = 'none';
+            clearForm();
+        }
+
+        // 폼 초기화
+        function clearForm() {
+            document.getElementById('nameInput').value = '';
+            document.getElementById('codeInput').value = '';
+            document.getElementById('subjectInput').value = '';
+            document.getElementById('titleInput').value = '';
+            document.getElementById('dateInput').value = '';
+            document.getElementById('descInput').value = '';
+        }
+
+        // 페이지 로드 시 수행평가 목록 로드
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSuhangList();
+        });
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+    <script src="../scripts/deadline.js"></script>
+</body>
+</html>

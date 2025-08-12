@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학습 자료</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .materials-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .subject-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid #f1f5f9;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #3b82f6;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--subject-color), var(--subject-color-light));
+        }
+
+        .subject-card.korean { --subject-color: #ef4444; --subject-color-light: #fca5a5; }
+        .subject-card.math { --subject-color: #3b82f6; --subject-color-light: #93c5fd; }
+        .subject-card.social { --subject-color: #10b981; --subject-color-light: #6ee7b7; }
+        .subject-card.science { --subject-color: #8b5cf6; --subject-color-light: #c4b5fd; }
+        .subject-card.english { --subject-color: #f59e0b; --subject-color-light: #fbbf24; }
+        .subject-card.history { --subject-color: #06b6d4; --subject-color-light: #67e8f9; }
+        .subject-card.info { --subject-color: #84cc16; --subject-color-light: #bef264; }
+        .subject-card.art { --subject-color: #ec4899; --subject-color-light: #f9a8d4; }
+        .subject-card.etc { --subject-color: #6b7280; --subject-color-light: #9ca3af; }
+
+        .subject-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--subject-color);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .subject-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .subject-description {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .material-button {
+            width: 90%;
+            max-width: 250px;
+            background: var(--subject-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .material-button:hover {
+            background: var(--subject-color-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .contact-info {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+        }
+
+        .contact-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+
+        .contact-text {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .subjects-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .subject-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>학습 자료</h1>
+    </header>
+
+    <main class="full-width-main">
+        <div class="materials-container">
+            <div class="page-header">
+                <h1 class="page-title">📚 학습 자료실</h1>
+                <p class="page-subtitle">
+                    각 과목별 학습 자료와 참고 문서들을 확인할 수 있습니다.<br>
+                    필요한 자료를 클릭하여 구글 드라이브에서 확인하세요.
+                </p>
+            </div>
+
+            <div class="subjects-grid">
+                <div class="subject-card korean">
+                    <div class="subject-icon">📖</div>
+                    <h3 class="subject-title">국어</h3>
+                    <p class="subject-description">문학, 어법, 화법과 작문 등 국어 과목 관련 학습 자료</p>
+                    <a href="https://drive.google.com/drive/folders/1PXrSLXofwM9cFwp6A-hpfkDvRbz08L3n" 
+                       target="_blank" class="material-button">자료 보기</a>
+                </div>
+
+                <div class="subject-card math">
+                    <div class="subject-icon">🧮</div>
+                    <h3 class="subject-title">수학</h3>
+                    <p class="subject-description">대수, 기하, 확률과 통계 등 수학 과목 관련 학습 자료</p>
+                    <a href="https://drive.google.com/drive/folders/1hHG7HkKYlX6wYD0AtTElODPgRdsbtfjV" 
+                       target="_blank" class="material-button">자료 보기</a>
+                </div>
+
+                <div class="subject-card social">
+                    <div class="subject-icon">🌍</div>
+                    <h3 class="subject-title">사회</h3>
+                    <p class="subject-description">통합사회, 정치와 법, 경제 등 사회 과목 관련 학습 자료</p>
+                    <a href="https://drive.google.com/drive/folders/1cEuvdtiQ7H8JgAjeXZagPmNz-j_HFytH" 
+                       target="_blank" class="material-button">자료 보기</a>
+                </div>
+
+                <div class="subject-card science">
+                    <div class="subject-icon">🔬</div>
+                    <h3 class="subject-title">과학</h3>
+                    <p class="subject-description">물리학, 화학, 생명과학, 지구과학 등 과학 과목 관련 학습 자료</p>
+                    <a href="https://drive.google.com/drive/folders/18HsDRVGVHRGcILXUh8OemiAmpEKqXuyM"
+                       target="_blank" class="material-button">자료 보기</a>
+                </div>
+
+                <div class="subject-card english">
+                    <div class="subject-icon">🌐</div>
+                    <h3 class="subject-title">영어</h3>
+                    <p class="subject-description">영어 독해, 어법, 듣기 등 영어 과목 관련 학습 자료</p>
+                    <a href="https://drive.google.com/drive/folders/1-286BawPyrz4d2la9Ta5t8mTEDgMmJEd" 
+                       target="_blank" class="material-button">자료 보기</a>
+                </div>
+
+                <div class="subject-card history">
+                    <div class="subject-icon">📜</div>
+                    <h3 class="subject-title">한국사</h3>
+                    <p class="subject-description">한국사 전반에 걸친 역사 학습 자료 및 참고 문서</p>
+                    <a href="https://drive.google.com/drive/folders/17rvD0aM4jWMNFfSzeFLR32ZIiUprOO3p" 
+                       target="_blank" class="material-button">자료 보기</a>
+                </div>
+
+                <div class="subject-card info">
+                    <div class="subject-icon">💻</div>
+                    <h3 class="subject-title">정보</h3>
+                    <p class="subject-description">프로그래밍, 알고리즘, 컴퓨터 과학 등 정보 과목 관련 자료</p>
+                    <a href="https://drive.google.com/drive/folders/1eJ9HwpT4uZz1w9SVqf7oLVqhvnZFN3eO" 
+                       target="_blank" class="material-button">자료 보기</a>
+                </div>
+
+                <div class="subject-card art">
+                    <div class="subject-icon">🎨</div>
+                    <h3 class="subject-title">미술</h3>
+                    <p class="subject-description">미술 이론, 작품 분석, 실기 관련 자료 및 참고 문서</p>
+                    <a href="https://drive.google.com/drive/folders/1nfqA3FFYViMTjcp3JBrHZiUgnPuYfUmO" 
+                       target="_blank" class="material-button">자료 보기</a>
+                </div>
+
+                <div class="subject-card etc">
+                    <div class="subject-icon">📋</div>
+                    <h3 class="subject-title">기타 자료</h3>
+                    <p class="subject-description">학급 운영, 행사 관련, 기타 유용한 자료 및 문서</p>
+                    <a href="https://drive.google.com/drive/folders/1os1XHJ-uYoYhd-YtIp1k4bbWoinPx5Sz" 
+                       target="_blank" class="material-button">자료 보기</a>
+                </div>
+            </div>
+
+            <div class="contact-info">
+                <h3 class="contact-title">📞 자료 문의</h3>
+                <p class="contact-text">
+                    자료가 열리지 않거나 추가 자료가 필요한 경우 문의 버튼을 눌러 문의하세요.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <a href="../index.html" class="home-neon-btn">홈으로</a>
+    <footer></footer>
+    <a href="https://open.kakao.com/o/s9IjzNKh" target="_blank" class="inquiry-btn">문의</a>
+
+    <script src="../scripts/main.js"></script>
+    <script>
+        function openContactModal() {
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('contactModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeContactModal();
+            }
+        });
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeContactModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시간표</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .timeline-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px 0 rgba(56,189,248,0.12);
+            padding: 2.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .timetable-image {
+            text-align: center;
+        }
+
+        .timetable-image img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 1rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .timetable-image h3 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .today-schedule {
+            background: #f8fafc;
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .today-date {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .today-date h3 {
+            color: #6366f1;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .today-date .date {
+            color: #64748b;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .today-date .day {
+            color: #ef4444;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+
+        .schedule-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            background: #fff;
+            border-radius: 0.8rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .schedule-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        /* 현재 교시 빨간 네온 효과 */
+        .schedule-item.current {
+            background: linear-gradient(135deg, #fff1f2 0%, #fef2f2 30%, #fee2e2 70%, #fff1f2 100%);
+            border: 2px solid #ef4444;
+            box-shadow: 
+                0 0 20px rgba(239, 68, 68, 0.3),
+                0 0 40px rgba(239, 68, 68, 0.1),
+                0 4px 16px rgba(239, 68, 68, 0.15);
+            animation: currentPeriodPulse 2s infinite;
+            transform: translateY(-2px);
+        }
+
+        @keyframes currentPeriodPulse {
+            0%, 100% {
+                box-shadow: 
+                    0 0 20px rgba(239, 68, 68, 0.3),
+                    0 0 40px rgba(239, 68, 68, 0.1),
+                    0 4px 16px rgba(239, 68, 68, 0.15);
+            }
+            50% {
+                box-shadow: 
+                    0 0 30px rgba(239, 68, 68, 0.5),
+                    0 0 60px rgba(239, 68, 68, 0.2),
+                    0 8px 32px rgba(239, 68, 68, 0.25);
+            }
+        }
+
+        .schedule-item.current .period {
+            background: #ef4444;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .schedule-item.current .subject {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .schedule-item.current .time {
+            color: #b91c1c;
+            font-weight: 600;
+        }
+
+        /* 점심시간이 현재 시간일 때 특별한 스타일 */
+        .schedule-item.current.lunch {
+            background: linear-gradient(135deg, #fef3e2 0%, #fef3e2 30%, #fed7aa 70%, #fef3e2 100%);
+            border: 2px solid #f59e0b;
+            box-shadow: 
+                0 0 20px rgba(245, 158, 11, 0.3),
+                0 0 40px rgba(245, 158, 11, 0.1),
+                0 4px 16px rgba(245, 158, 11, 0.15);
+            animation: lunchPeriodPulse 2s infinite;
+        }
+
+        @keyframes lunchPeriodPulse {
+            0%, 100% {
+                box-shadow: 
+                    0 0 20px rgba(245, 158, 11, 0.3),
+                    0 0 40px rgba(245, 158, 11, 0.1),
+                    0 4px 16px rgba(245, 158, 11, 0.15);
+            }
+            50% {
+                box-shadow: 
+                    0 0 30px rgba(245, 158, 11, 0.5),
+                    0 0 60px rgba(245, 158, 11, 0.2),
+                    0 8px 32px rgba(245, 158, 11, 0.25);
+            }
+        }
+
+        .schedule-item.current.lunch .period {
+            background: #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+
+        .schedule-item.current.lunch .subject {
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        .schedule-item.current.lunch .time {
+            color: #b45309;
+            font-weight: 600;
+        }
+
+        .period {
+            background: #6366f1;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            min-width: 60px;
+            text-align: center;
+            margin-right: 1rem;
+        }
+
+        .subject {
+            flex: 1;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .time {
+            color: #6b7280;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .no-schedule {
+            text-align: center;
+            color: #6b7280;
+            font-size: 1.2rem;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 0.8rem;
+            border: 2px dashed #d1d5db;
+        }
+
+        @media (max-width: 768px) {
+            .timeline-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .today-schedule {
+                padding: 1.5rem;
+            }
+            
+            .schedule-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .period {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>시간표</h1>
+    </header>
+
+    <div class="timeline-container">
+        <!-- 왼쪽: 시간표 사진 -->
+        <div class="timetable-image">
+            <h3>📅 주간 시간표</h3>
+            <img src="../images/timeline.jpg" alt="시간표" id="timetableImg">
+            <p style="margin-top: 1rem; color: #6b7280; font-size: 0.9rem;">
+                * 시간표 이미지를 업데이트하려면 관리자에게 문의하세요
+            </p>
+        </div>
+
+        <!-- 오른쪽: 오늘의 시간표 -->
+        <div class="today-schedule">
+            <div class="today-date">
+                <h3>오늘의 시간표</h3>
+                <div class="date" id="todayDate">2025년 8월 5일</div>
+                <div class="day" id="todayDay">월요일</div>
+            </div>
+
+            <ul class="schedule-list" id="scheduleList">
+                <!-- JavaScript로 동적 생성 -->
+            </ul>
+        </div>
+    </div>
+
+    <a href="../index.html" class="home-neon-btn">홈으로</a>
+    <footer></footer>
+    <a href="https://open.kakao.com/o/s9IjzNKh" target="_blank" class="inquiry-btn">문의</a>
+
+    <script>
+        // 요일별 시간표 데이터 (1학년 5반)
+        const weeklySchedule = {
+            0: [], // 일요일 - 휴일
+            1: [ // 월요일
+                { period: '1교시', subject: '음악', time: '08:30-09:20' },
+                { period: '2교시', subject: '통합사회 1', time: '09:30-10:20' },
+                { period: '3교시', subject: '유도', time: '10:30-11:20' },
+                { period: '4교시', subject: '독토글', time: '11:30-12:20' },
+                { period: '점심', subject: '점심시간', time: '12:20-13:40' },
+                { period: '5교시', subject: '공통영어 1', time: '13:40-14:30' },
+                { period: '6교시', subject: '한국사', time: '14:40-15:30' },
+                { period: '7교시', subject: '통합과학 1', time: '15:40-16:30' }
+            ],
+            2: [ // 화요일
+                { period: '1교시', subject: '음악', time: '08:30-09:20' },
+                { period: '2교시', subject: '통합사회 1', time: '09:30-10:20' },
+                { period: '3교시', subject: '유도', time: '10:30-11:20' },
+                { period: '4교시', subject: '독토글', time: '11:30-12:20' },
+                { period: '점심', subject: '점심시간', time: '12:20-13:40' },
+                { period: '5교시', subject: '공통영어 1', time: '13:40-14:30' },
+                { period: '6교시', subject: '한국사', time: '14:40-15:30' },
+                { period: '7교시', subject: '통합과학 1', time: '15:40-16:30' }
+            ],
+            3: [ // 수요일
+                { period: '1교시', subject: '음악', time: '08:30-09:20' },
+                { period: '2교시', subject: '통합사회 1', time: '09:30-10:20' },
+                { period: '3교시', subject: '유도', time: '10:30-11:20' },
+                { period: '4교시', subject: '독토글', time: '11:30-12:20' },
+                { period: '점심', subject: '점심시간', time: '12:20-13:40' },
+                { period: '5교시', subject: '공통영어 1', time: '13:40-14:30' },
+                { period: '6교시', subject: '한국사', time: '14:40-15:30' },
+                { period: '7교시', subject: '통합과학 1', time: '15:40-16:30' }
+            ],
+            4: [ // 목요일
+                { period: '1교시', subject: '음악', time: '08:30-09:20' },
+                { period: '2교시', subject: '통합사회 1', time: '09:30-10:20' },
+                { period: '3교시', subject: '유도', time: '10:30-11:20' },
+                { period: '4교시', subject: '독토글', time: '11:30-12:20' },
+                { period: '점심', subject: '점심시간', time: '12:20-13:40' },
+                { period: '5교시', subject: '공통영어 1', time: '13:40-14:30' },
+                { period: '6교시', subject: '한국사', time: '14:40-15:30' },
+                { period: '7교시', subject: '통합과학 1', time: '15:40-16:30' }
+            ],
+            5: [ // 금요일
+                { period: '1교시', subject: '음악', time: '08:30-09:20' },
+                { period: '2교시', subject: '통합사회 1', time: '09:30-10:20' },
+                { period: '3교시', subject: '유도', time: '10:30-11:20' }, 
+                { period: '4교시', subject: '독토글', time: '11:30-12:20' },
+                { period: '점심', subject: '점심시간', time: '12:20-13:40' },
+                { period: '5교시', subject: '공통영어 1', time: '13:40-14:30' },
+                { period: '6교시', subject: '한국사', time: '14:40-15:30' },
+                { period: '7교시', subject: '통합과학 1', time: '15:40-16:30' }
+            ],
+            6: [] // 토요일 - 휴일
+        };
+
+        function updateTodaySchedule() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            const date = today.getDate();
+            const dayOfWeek = today.getDay();
+            
+            const dayNames = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+            
+            // 날짜 업데이트
+            document.getElementById('todayDate').textContent = `${year}년 ${month}월 ${date}일`;
+            document.getElementById('todayDay').textContent = dayNames[dayOfWeek];
+            
+            // 시간표 업데이트
+            const scheduleList = document.getElementById('scheduleList');
+            const todaySchedule = weeklySchedule[dayOfWeek];
+            
+            if (todaySchedule.length === 0) {
+                scheduleList.innerHTML = '<div class="no-schedule">📅 오늘은 휴일입니다!</div>';
+            } else {
+                const currentPeriodIndex = getCurrentPeriod(todaySchedule);
+                
+                scheduleList.innerHTML = todaySchedule.map((item, index) => {
+                    const isCurrentPeriod = index === currentPeriodIndex;
+                    const isLunch = item.period === '점심';
+                    const currentClass = isCurrentPeriod ? (isLunch ? 'current lunch' : 'current') : '';
+                    
+                    return `
+                        <li class="schedule-item ${currentClass}">
+                            <div class="period">${item.period}</div>
+                            <div class="subject">${item.subject}</div>
+                            <div class="time">${item.time}</div>
+                        </li>
+                    `;
+                }).join('');
+            }
+        }
+
+        // 현재 시간에 해당하는 교시를 찾는 함수
+        function getCurrentPeriod(schedule) {
+            const now = new Date();
+            const currentTime = now.getHours() * 60 + now.getMinutes(); // 분 단위로 변환
+            
+            for (let i = 0; i < schedule.length; i++) {
+                const timeRange = schedule[i].time;
+                
+                const [startTime, endTime] = timeRange.split('-');
+                const [startHour, startMin] = startTime.split(':').map(Number);
+                const [endHour, endMin] = endTime.split(':').map(Number);
+                
+                const startMinutes = startHour * 60 + startMin;
+                const endMinutes = endHour * 60 + endMin;
+                
+                // 현재 시간이 해당 교시(점심시간 포함) 시간 범위에 있는지 확인
+                if (currentTime >= startMinutes && currentTime <= endMinutes) {
+                    return i;
+                }
+            }
+            
+            return -1; // 현재 교시가 없음
+        }
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTodaySchedule();
+            
+            // 1분마다 현재 교시 업데이트
+            setInterval(updateTodaySchedule, 60000);
+            
+            // 시간표 이미지 에러 처리
+            const timetableImg = document.getElementById('timetableImg');
+            timetableImg.onerror = function() {
+                this.style.display = 'none';
+                this.parentNode.innerHTML += '<div style="padding: 3rem; background: #f1f5f9; border-radius: 1rem; color: #64748b; text-align: center; border: 2px dashed #cbd5e1;"><p style="font-size: 1.2rem; margin: 0;">📋</p><p style="margin: 0.5rem 0 0 0;">시간표 이미지를 준비 중입니다</p></div>';
+            };
+        });
+    </script>
+</body>
+</html>

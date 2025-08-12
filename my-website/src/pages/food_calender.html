@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>급식 캘린더</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .meal-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px 0 rgba(56,189,248,0.12);
+            padding: 2.5rem;
+        }
+
+        .meal-week {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .meal-day {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 30%, #f1f5f9 70%, #ffffff 100%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 16px rgba(56,189,248,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .meal-day:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(56,189,248,0.15);
+        }
+
+        /* 오늘 날짜 빨간 네온 효과 */
+        .meal-day.today {
+            background: linear-gradient(135deg, #fff1f2 0%, #fef2f2 30%, #fee2e2 70%, #fff1f2 100%);
+            border: 2px solid #ef4444;
+            box-shadow: 
+                0 0 20px rgba(239, 68, 68, 0.3),
+                0 0 40px rgba(239, 68, 68, 0.1),
+                0 4px 16px rgba(56,189,248,0.08);
+            animation: redNeonPulse 2s infinite;
+        }
+
+        @keyframes redNeonPulse {
+            0%, 100% {
+                box-shadow: 
+                    0 0 20px rgba(239, 68, 68, 0.3),
+                    0 0 40px rgba(239, 68, 68, 0.1),
+                    0 4px 16px rgba(56,189,248,0.08);
+            }
+            50% {
+                box-shadow: 
+                    0 0 30px rgba(239, 68, 68, 0.5),
+                    0 0 60px rgba(239, 68, 68, 0.2),
+                    0 8px 32px rgba(239, 68, 68, 0.15);
+            }
+        }
+
+        .meal-day.today::before {
+            content: '오늘';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ef4444;
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .meal-date {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #6366f1;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .meal-day.today .meal-date {
+            color: #dc2626;
+        }
+
+        .meal-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .meal-menu li {
+            padding: 0.4rem 0;
+            color: #374151;
+            font-size: 0.9rem;
+            border-bottom: 1px dotted #d1d5db;
+            transition: color 0.2s;
+        }
+
+        .meal-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .meal-day.today .meal-menu li {
+            color: #7f1d1d;
+            font-weight: 500;
+        }
+
+        .meal-calories {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 600;
+            padding: 0.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 0.5rem;
+        }
+
+        .meal-day.today .meal-calories {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+            font-size: 1.2rem;
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #ef4444;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 1200px) {
+            .meal-week {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .meal-week {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .meal-week {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .meal-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>급식 캘린더</h1>
+    </header>
+
+    <div class="meal-container">
+        <h2>🍽️ 이번 주 급식 메뉴</h2>
+        <div id="mealContent" class="loading">
+            급식 메뉴를 불러오는 중...
+        </div>
+    </div>
+
+    <a href="../index.html" class="home-neon-btn">홈으로</a>
+    <footer></footer>
+    <a href="https://open.kakao.com/o/s9IjzNKh" target="_blank" class="inquiry-btn">문의</a>
+    
+    <script>
+        // 급식 데이터 API 호출
+        async function loadMealData() {
+            try {
+                const response = await fetch('/api/meal');
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayMealData(result.data);
+                } else {
+                    showError('급식 데이터를 불러오는데 실패했습니다: ' + result.error);
+                }
+            } catch (error) {
+                showError('네트워크 오류가 발생했습니다: ' + error.message);
+            }
+        }
+
+        // 급식 데이터 화면에 표시 (일주일 형태)
+        function displayMealData(mealData) {
+            const container = document.getElementById('mealContent');
+            
+            if (!mealData || mealData.length === 0) {
+                container.innerHTML = '<div class="error">급식 데이터가 없습니다.</div>';
+                return;
+            }
+
+            const weekHTML = mealData.map(dayData => `
+                <div class="meal-day ${dayData.isToday ? 'today' : ''}">
+                    <div class="meal-date">
+                        ${dayData.day}<br>
+                        <small>${dayData.date}</small>
+                    </div>
+                    <ul class="meal-menu">
+                        ${dayData.menu.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                    <div class="meal-calories">
+                        ${dayData.calories}
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `<div class="meal-week">${weekHTML}</div>`;
+        }
+
+        // 오류 메시지 표시
+        function showError(message) {
+            document.getElementById('mealContent').innerHTML = 
+                `<div class="error">${message}</div>`;
+        }
+
+        // 페이지 로드 시 급식 데이터 가져오기
+        document.addEventListener('DOMContentLoaded', loadMealData);
+        
+        // 매일 자정에 데이터 새로고침
+        setInterval(() => {
+            const now = new Date();
+            if (now.getHours() === 0 && now.getMinutes() === 0) {
+                loadMealData();
+            }
+        }, 60000); // 1분마다 체크
+    </script>
+</body>
+</html>

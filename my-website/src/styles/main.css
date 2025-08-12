@@ -1,0 +1,485 @@
+body {
+    font-family: 'Pretendard', 'Noto Sans KR', Arial, sans-serif;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+header {
+    background: #6366f1;
+    color: #fff;
+    padding: 2rem 0 1rem 0;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(99,102,241,0.1);
+    border-radius: 0 0 2rem 2rem;
+    animation: fadeInDown 1s;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-40px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2.5rem 0 2rem 0;
+}
+
+.button {
+    display: inline-block;
+    padding: 2rem 5rem;
+    margin: 0.5rem;
+    background: linear-gradient(90deg, #6366f1 0%, #38bdf8 100%);
+    color: #fff;
+    border: none;
+    border-radius: 1.2rem;
+    font-size: 2.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(56,189,248,0.18);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.button:hover {
+    transform: scale(1.04);
+    background: linear-gradient(90deg, #38bdf8 0%, #6366f1 100%);
+    box-shadow: 0 8px 32px rgba(56,189,248,0.22);
+}
+
+main {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow:
+        0 8px 32px 0 rgba(56,189,248,0.12),
+        0 1.5px 6px 0 rgba(99,102,241,0.08),
+        0 0.5px 1.5px 0 rgba(0,0,0,0.04);
+    padding: 2rem;
+    animation: fadeInUp 1s;
+    transition: box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+main::before {
+    content: "";
+    position: absolute;
+    left: -40px;
+    top: -40px;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, #a5b4fc33 0%, transparent 80%);
+    z-index: 0;
+}
+
+main > * {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+footer {
+    text-align: center;
+    color: #888;
+    margin: 2rem 0 1rem 0;
+    font-size: 0.95rem;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 5rem auto 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 1.0rem;
+    row-gap: 0rem;
+    align-items: start;
+}
+
+.main-box-link {
+    display: block;
+    text-decoration: none;
+    width: 100%;
+}
+
+/* 세 번째 박스(시간표)를 위로 당기기 */
+.main-box-link:nth-child(3) {
+    margin-top: -2.5rem;
+}
+
+.main-box-link:nth-child(4) {
+    margin-top: -2.5rem;
+}
+
+.main-box-link:nth-child(5) {
+    margin-top: -2.5rem;
+}
+
+.main-box-link:nth-child(6) {
+    margin-top: -2.5rem;
+}
+
+.main-box-link main {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 30%, #f1f5f9 70%, #ffffff 100%);
+    border-radius: 1.5rem;
+    box-shadow:
+        0 8px 32px 0 rgba(56,189,248,0.12),
+        0 1.5px 6px 0 rgba(99,102,241,0.08),
+        0 0.5px 1.5px 0 rgba(0,0,0,0.04);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: box-shadow 0.2s, transform 0.2s, background 0.3s;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.main-box-link main:hover {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 30%, #bae6fd 70%, #dbeafe 100%);
+    box-shadow:
+        0 16px 48px 0 rgba(56,189,248,0.18),
+        0 3px 12px 0 rgba(99,102,241,0.12),
+        0 1px 3px 0 rgba(0,0,0,0.08);
+    transform: translateY(-4px) scale(1.03);
+}
+
+.main-box-link h1 {
+    color: #222;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+}
+
+.main-box-link p {
+    color: #333;
+    font-size: 1.15rem;
+    margin: 0;
+}
+
+/* 모바일 반응형: 768px 이하에서 1열로 변경 */
+@media (max-width: 768px) {
+    .main-container {
+        grid-template-columns: 1fr;
+        row-gap: 0rem;
+        padding: 0 1rem;
+        margin: 4rem auto 0 auto;
+    }
+    
+    /* 모바일에서 시간표 박스를 더 위로 당기기 */
+    .main-box-link:nth-child(1) {
+    margin-top: -2.5rem;
+    }
+    
+    .main-box-link:nth-child(2) {
+    margin-top: -2.5rem;
+    }
+
+    .main-box-link:nth-child(3) {
+    margin-top: -2.5rem;
+    }
+
+    .main-box-link:nth-child(4) {
+    margin-top: -2.5rem;
+    }
+
+    .main-box-link:nth-child(5) {
+    margin-top: -2.5rem;
+    }
+
+    .main-box-link:nth-child(6) {
+    margin-top: -2.5rem;
+    }
+    
+    .main-box-link h1 {
+        font-size: 1.8rem;
+    }
+    
+    .main-box-link p {
+        font-size: 1rem;
+    }
+    
+    .main-box-link main {
+        padding: 2rem 1.5rem;
+    }
+}
+
+.home-neon-btn {
+    position: fixed;
+    left: 32px;
+    bottom: 32px;
+    z-index: 1000;
+    display: inline-block;
+    padding: 0.6rem 1.6rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    background: #22c55e;
+    border: none;
+    border-radius: 1.2rem;
+    text-decoration: none;
+    box-shadow:
+        0 0 8px #22c55e,
+        0 0 16px #4ade80,
+        0 0 24px #bbf7d0;
+    transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+}
+
+.home-neon-btn:hover {
+    background: #16a34a;
+    box-shadow:
+        0 0 16px #4ade80,
+        0 0 32px #22c55e,
+        0 0 48px #bbf7d0;
+    transform: scale(1.07);
+}
+
+.card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.card {
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow:
+        0 4px 16px 0 rgba(56,189,248,0.10),
+        0 1px 4px 0 rgba(99,102,241,0.06);
+    padding: 1.5rem 1.5rem 1.2rem 1.5rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+}
+
+.card:hover {
+    box-shadow:
+        0 8px 32px 0 rgba(56,189,248,0.16),
+        0 2px 8px 0 rgba(99,102,241,0.10);
+    transform: translateY(-4px) scale(1.02);
+}
+
+.card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.35rem;
+    color: #222;
+    font-weight: 800;
+}
+
+.card .date {
+    color: #38bdf8;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.card .desc {
+    color: #444;
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.full-width-main {
+    max-width: 1200px;
+    margin: 2.5rem auto;
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow:
+        0 8px 32px 0 rgba(56,189,248,0.12),
+        0 1.5px 6px 0 rgba(99,102,241,0.08),
+        0 0.5px 1.5px 0 rgba(0,0,0,0.04);
+    padding: 2.5rem 2rem;
+    animation: fadeInUp 1s;
+    transition: box-shadow 0.3s;
+    position: relative;
+}
+
+.card-list.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.card {
+    background: #f9fafb;
+    border-radius: 1.2rem;
+    box-shadow:
+        0 4px 16px 0 rgba(56,189,248,0.10),
+        0 1px 4px 0 rgba(99,102,241,0.06);
+    padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.card:hover {
+    box-shadow:
+        0 8px 32px 0 rgba(56,189,248,0.16),
+        0 2px 8px 0 rgba(99,102,241,0.10);
+    transform: translateY(-4px) scale(1.02);
+}
+
+.card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    color: #222;
+    font-weight: 800;
+}
+
+.card .date {
+    color: #38bdf8;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.card .desc {
+    color: #444;
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .card-list.grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 600px) {
+    .card-list.grid {
+        grid-template-columns: 1fr;
+    }
+    .full-width-main {
+        padding: 1.2rem 0.5rem;
+    }
+}
+
+.card.scheduled {
+    border: 2.5px solid #38bdf8;
+    background: #f0f9ff;
+}
+.card.urgent {
+    border: 2.5px solid #ef4444;
+    background: #fff0f0;
+    box-shadow: 0 0 12px #ef444455;
+}
+.card.done {
+    border: 2.5px solid #22c55e;
+    background: #f0fff4;
+    opacity: 0.92;
+}
+
+.status-guide {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 0.6rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.92rem;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(56,189,248,0.08);
+    line-height: 1.5;
+    text-align: left;
+    z-index: 1000;
+    min-width: 180px;
+    max-width: 240px;
+    pointer-events: none; /* 클릭 방지 */
+    opacity: 0.93;
+}
+.urgent-guide { color: #ef4444; font-weight: bold; }
+.scheduled-guide { color: #38bdf8; font-weight: bold; }
+.done-guide { color: #22c55e; font-weight: bold; }
+
+/* 기본: 가로 3개 */
+.card-list.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+    grid-auto-rows: 1fr;
+    align-items: stretch;
+}
+
+/* 태블릿: 가로 2개 */
+@media (max-width: 900px) {
+    .card-list.grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+    }
+}
+
+/* 모바일: 가로 1개 */
+@media (max-width: 600px) {
+    .card-list.grid {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+    .card {
+        font-size: 1rem;
+        padding: 1.1rem 0.7rem;
+    }
+    .full-width-main {
+        padding: 1rem 0.2rem;
+        border-radius: 0.7rem;
+    }
+    header h1, main h2 {
+        font-size: 1.25rem;
+    }
+}
+
+.card.empty {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    pointer-events: none;
+    min-height: 0 !important;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.inquiry-btn {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 1001;
+    background: #fee500;
+    color: #181600;
+    font-weight: bold;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.9rem 2.2rem;
+    font-size: 1.15rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    text-decoration: none;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.inquiry-btn:hover {
+    background: #ffe066;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+    transform: translateY(-2px) scale(1.04);
+}
+
