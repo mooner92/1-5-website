@@ -349,10 +349,6 @@ def delete_hagteugsa(hagteugsa_id):
     except Exception as e:
         return {'success': False, 'msg': str(e)}, 500
 
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
-
 @app.route('/api/meal')
 def get_meal_data():
     try:
