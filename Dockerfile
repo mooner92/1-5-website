@@ -10,8 +10,8 @@ COPY . /app
 # 필요한 파이썬 패키지 설치
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 컨테이너가 5000번 포트를 외부에 노출
-EXPOSE 5000
+# 컨테이너가 8000번 포트를 외부에 노출
+EXPOSE 8000
 
 # 환경 변수 설정
 ENV FLASK_APP=my-website/flask_app.py
