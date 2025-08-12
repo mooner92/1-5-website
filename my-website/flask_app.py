@@ -73,12 +73,24 @@ init_db()
 # 루트 경로 핸들러 (Health Check용)
 @app.route('/')
 def index():
-    return app.send_static_file('index.html')
+    try:
+        return app.send_static_file('index.html')
+    except Exception as e:
+        # 정적 파일을 찾을 수 없는 경우 간단한 응답
+        return {'status': 'ok', 'message': 'Flask app is running'}, 200
 
-# Health Check 엔드포인트
+# Health Check 엔드포인트들
 @app.route('/health')
 def health_check():
     return {'status': 'healthy', 'message': 'Flask app is running'}, 200
+
+@app.route('/ping')
+def ping():
+    return {'status': 'pong'}, 200
+
+@app.route('/status')
+def status():
+    return {'status': 'ok', 'timestamp': datetime.now().isoformat()}, 200
 
 # 회원가입 API
 @app.route('/api/signup', methods=['POST'])
