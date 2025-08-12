@@ -70,6 +70,16 @@ def init_db():
 
 init_db()
 
+# 루트 경로 핸들러 (Health Check용)
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+# Health Check 엔드포인트
+@app.route('/health')
+def health_check():
+    return {'status': 'healthy', 'message': 'Flask app is running'}, 200
+
 # 회원가입 API
 @app.route('/api/signup', methods=['POST'])
 def signup():
